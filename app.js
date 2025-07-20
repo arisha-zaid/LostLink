@@ -57,8 +57,21 @@ app.use((req, res, next) => {
   next();
 });
 
+const store =  MongoStore.create({
+  mongoUrl:  process.env.MONGO_URL,
+  crypto:{
+    secret: process.env.SECRET
+  },
+  touchAfter: 24 * 3600
+});
+
+store.on("error",() => {
+  console.log("Error in mongo session store ");
+})
+
 // Session configuration (using MongoDB instead of SQLite)
 const sessionOptions = {
+  store,
   secret:  process.env.SECRET,
   saveUninitialized: true,
   resave: false,
