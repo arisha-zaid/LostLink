@@ -30,9 +30,8 @@ LostLink is a MERN-based Lost & Found platform that enables users to report, sea
 ## Tech Stack
 
 **Frontend:**
-- React.js
-- Tailwind CSS
-- Axios
+- Vanilla CSS
+- Bootstap
 - EJS (for SSR-based modules if used)
 
 **Backend:**
@@ -40,18 +39,13 @@ LostLink is a MERN-based Lost & Found platform that enables users to report, sea
 - Express.js
 - MongoDB (Atlas + Local fallback)
 - Mongoose
-- Passport.js (Authentication)
-
-**Machine Learning:**
-- Python-based ML model for image similarity detection
-- Flask API or Python service to interface with Node.js
+- Passport.js (Authentication + Google strategy)
 
 **Other Tools:**
 - Multer (File/image uploads)
 - dotenv (Environment config)
 - Express-session
 - Nodemailer (for OTP & email support)
-- JWT (optional for tokenized routes)
 
 ---
 
@@ -98,7 +92,6 @@ LostLink/
      MONGO_URL_LOCAL=mongodb://127.0.0.1:27017/lostlink
      EMAIL_USER=your-email@gmail.com
      EMAIL_PASS=your-app-password
-     JWT_SECRET=your-jwt-secret
      GOOGLE_CLIENT_ID=your-google-client-id
      GOOGLE_CLIENT_SECRET=your-google-client-secret
      SMS_API_KEY=your-sms-api-key (if using for OTP)
