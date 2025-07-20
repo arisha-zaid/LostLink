@@ -1,6 +1,8 @@
 if(process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
+
+// MongoDB connection will be handled in main() function
 const express = require('express');
 const app = express();
 const port = 8080;
@@ -34,11 +36,35 @@ main()
   .catch(err => console.error("MongoDB Connection Error:", err));
 
 async function main() {
-  await mongoose.connect(process.env.MONGO_URL, {
-    connectTimeoutMS: 20000,
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
+  try {
+    console.log('Attempting to connect to MongoDB Atlas...');
+    await mongoose.connect(process.env.MONGO_URL, {
+      connectTimeoutMS: 10000,
+      socketTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 10000,
+      maxPoolSize: 10,
+      minPoolSize: 5,
+      maxIdleTimeMS: 30000,
+      retryWrites: true,
+      w: 'majority'
+    });
+    console.log('✅ Connected to MongoDB Atlas successfully!');
+  } catch (error) {
+    console.error('❌ MongoDB Atlas connection failed:', error.message);
+    
+    // Fallback to local MongoDB if Atlas fails
+    console.log('🔄 Attempting to connect to local MongoDB...');
+    try {
+      await mongoose.connect(process.env.MONGO_URL_LOCAL || 'mongodb://127.0.0.1:27017/LostLink');
+      console.log('✅ Connected to local MongoDB successfully!');
+    } catch (localError) {
+      console.error('❌ Local MongoDB connection also failed:', localError.message);
+      console.log('💡 Please either:');
+      console.log('   1. Add your IP to MongoDB Atlas whitelist, or');
+      console.log('   2. Install and start MongoDB locally');
+      throw new Error('Both Atlas and local MongoDB connections failed');
+    }
+  }
 }
 
 // View engine setup
@@ -57,28 +83,25 @@ app.use((req, res, next) => {
   next();
 });
 
-const store =  MongoStore.create({
-  mongoUrl:  process.env.MONGO_URL,
-  crypto:{
+const store = MongoStore.create({
+  mongoUrl: process.env.MONGO_URL,
+  crypto: {
     secret: process.env.SECRET
   },
-  touchAfter: 24 * 3600
+  touchAfter: 24 * 3600,
+  ttl: 14 * 24 * 60 * 60 // 14 days expiration
 });
 
-store.on("error",() => {
-  console.log("Error in mongo session store ");
-})
+store.on("error", (err) => {
+  console.log("Error in mongo session store:", err);
+});
 
 // Session configuration (using MongoDB instead of SQLite)
 const sessionOptions = {
   store,
-  secret:  process.env.SECRET,
+  secret: process.env.SECRET,
   saveUninitialized: true,
   resave: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URL,
-    ttl: 14 * 24 * 60 * 60 // 14 days expiration
-  }),
   cookie: {
     httpOnly: true,
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
