@@ -112,6 +112,7 @@
       </form>
 
       <!-- Icons -->
+       <% if (typeof currUser === 'undefined') { currUser = null; } %>
        <% if(!currUser) {%>
       <a href="/login" class="nav-link p-2"><i class="fa-solid fa-right-to-bracket"></i></a>
       <a href="/signup" class="nav-link p-2"><i class="fa-solid fa-user-plus"></i></a>

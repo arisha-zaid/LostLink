@@ -16,12 +16,7 @@ const wrapasync = require('./utils/wrapasync.js');
 const ExpressError = require('./utils/expressError.js');
 const session = require('express-session');
 const MongoStore = require('connect-mongo'); // Replaced SQLite with MongoDB session store
-const itemRouter = require('./routes/items.js');
-const claimRouter = require('./routes/claims.js');
-const userRouter = require('./routes/user.js');
-const emailRoutes = require('./routes/mailer.js');
-const notificationRouter = require('./routes/notify.js');
-const adminRoutes = require('./routes/admin.js');
+
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -30,7 +25,16 @@ const { checkNotifications } = require('./middleware.js');
 const GoogleStrategy = require('passport-google-oidc').Strategy;
 var logger = require('morgan');
 
+// Routers 
+const itemRouter = require('./routes/items.js');
+const claimRouter = require('./routes/claims.js');
+const userRouter = require('./routes/user.js');
+const emailRoutes = require('./routes/mailer.js');
+const notificationRouter = require('./routes/notify.js');
+const adminRoutes = require('./routes/admin.js');
 
+
+// DB Connection
 main()
   .then(() => console.log('MongoDB Connected!'))
   .catch(err => console.error("MongoDB Connection Error:", err));
@@ -48,18 +52,18 @@ async function main() {
       retryWrites: true,
       w: 'majority'
     });
-    console.log('✅ Connected to MongoDB Atlas successfully!');
+    console.log(' Connected to MongoDB Atlas successfully!');
   } catch (error) {
-    console.error('❌ MongoDB Atlas connection failed:', error.message);
+    console.error(' MongoDB Atlas connection failed:', error.message);
     
     // Fallback to local MongoDB if Atlas fails
-    console.log('🔄 Attempting to connect to local MongoDB...');
+    console.log(' Attempting to connect to local MongoDB...');
     try {
       await mongoose.connect(process.env.MONGO_URL_LOCAL || 'mongodb://127.0.0.1:27017/LostLink');
-      console.log('✅ Connected to local MongoDB successfully!');
+      console.log('Connected to local MongoDB successfully!');
     } catch (localError) {
-      console.error('❌ Local MongoDB connection also failed:', localError.message);
-      console.log('💡 Please either:');
+      console.error('Local MongoDB connection also failed:', localError.message);
+      console.log('   Please either:');
       console.log('   1. Add your IP to MongoDB Atlas whitelist, or');
       console.log('   2. Install and start MongoDB locally');
       throw new Error('Both Atlas and local MongoDB connections failed');
@@ -77,6 +81,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(logger('dev'));
+
+// Session setup
 
 app.use((req, res, next) => {
   res.locals.searchQuery = '';
@@ -110,6 +116,7 @@ const sessionOptions = {
 };
 app.use(session(sessionOptions));
 
+// Passport setup
 // Authentication Setup
 app.use(passport.initialize());
 app.use(passport.session());
@@ -122,6 +129,72 @@ if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
   console.error('Missing Google OAuth credentials!');
 }
 
+//google strategy 
+// Google Strategy Configuration (Updated for MongoDB)
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+   callbackURL: 'http://localhost:8080/oauth2/redirect/google',
+  scope: ['profile', 'email']
+}, async (issuer, profile, done) => {
+  try {
+    // Case-insensitive email search
+    const email = profile.emails[0].value.toLowerCase();
+      
+    // Find user by Google ID or email
+    let user = await User.findOne({
+      $or: [
+        { googleId: profile.id },
+        { email: email },
+      ]
+    });
+
+    if (!user) {
+
+       // Assign a unique username to Google users only
+      const baseUsername = email.split('@')[0]; // e.g., 'arisha'
+      let username = baseUsername;
+      let count = 1;
+
+      // Avoid duplicate usernames
+      while (await User.findOne({ username })) {
+        username = `${baseUsername}${count++}`; // arisha1, arisha2...
+      }
+      // Create new user
+      user = new User({
+        googleId: profile.id,
+        email: email,
+        // username: email.split('@')[0], // auto-generate username
+        name: profile.displayName,
+        username, //  username set only for Google users
+        verified: true // Mark Google-authenticated users as verified
+      });
+      await user.save();
+    } else if (!user.googleId) {
+      // Link Google to existing local account
+      user.googleId = profile.id;
+
+       // Optional: Only assign username if missing
+      if (!user.username) {
+        const baseUsername = email.split('@')[0];
+        let username = baseUsername;
+        let count = 1;
+
+        while (await User.findOne({ username })) {
+          username = `${baseUsername}${count++}`;
+        }
+
+        user.username = username;
+      }
+
+      await user.save();
+    }
+    return done(null, user);
+  } catch (err) {
+    console.error('Google auth error:', err);
+    return done(err);
+  }
+}));
 
 // Serialization (works for both strategies)
 passport.serializeUser(User.serializeUser());
