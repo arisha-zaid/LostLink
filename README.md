@@ -19,7 +19,6 @@ LostLink is a MERN-based Lost & Found platform that enables users to report, sea
 
 - User authentication with session management
 - Report lost or found items with images and details
-- ML-based matching system to recommend potential matches
 - Admin panel for approving or rejecting item claims
 - OTP-based password recovery via mobile
 - Google Sign-In support
