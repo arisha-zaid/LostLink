@@ -1,0 +1,108 @@
+<%- layout('/layout/boilerplate.ejs') %>
+
+<!-- Container with some spacing on top -->
+<div class="container mt-4">
+  <div class="row">
+    <!-- Centered column for medium screens -->
+    <div class="col-md-8 offset-md-2">
+
+      <!-- Heading with bell icon -->
+      <h2 class="mb-4">
+        <i class="fa-solid fa-bell"></i> Your Notifications
+      </h2>
+
+      <!-- If notifications exist -->
+      <% if (notifications && notifications.length > 0) { %>
+        <div class="notifications-list">
+
+          <!-- Loop through all notifications -->
+          <% notifications.forEach(function(notification) { %>
+
+            <!-- Each notification in a card -->
+            <div class="card mb-3 <%= notification.read ? 'notification-read' : 'notification-unread' %>">
+              <div class="card-body">
+
+                <!-- Flex layout to separate message & action -->
+                <div class="d-flex justify-content-between align-items-start">
+
+                  <!-- Message and timestamp section -->
+                  <div class="notification-content flex-grow-1">
+                    <!-- The main notification message -->
+                    <p class="mb-1"><%= notification.message %></p>
+
+                    <!-- Timestamp of when it was created -->
+                    <small class="text-muted">
+                      <i class="fa-regular fa-clock"></i>
+                      <%= notification.createdAt.toLocaleDateString() %> 
+                      at 
+                      <%= notification.createdAt.toLocaleTimeString() %>
+                    </small>
+                  </div>
+
+                  <!-- Action section (Mark as read / already read) -->
+                  <div class="notification-actions">
+                    <% if (!notification.read) { %>
+                      <!-- If it's unread, show "New" badge -->
+                      <span class="badge bg-primary me-2">New</span>
+
+                      <!-- Form to mark this notification as read -->
+                      <form action="/notifications/<%= notification._id %>/read" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary" title="Mark as read">
+                          <i class="fa-solid fa-check"></i>
+                        </button>
+                      </form>
+                    <% } else { %>
+                      <!-- If already read, show a checkmark icon -->
+                      <span class="text-muted">
+                        <i class="fa-solid fa-check-circle"></i> Read
+                      </span>
+                    <% } %>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          <% }); %>
+        </div>
+
+        <!-- Mark all as read button at bottom -->
+        <div class="mt-4">
+          <form action="/notifications/mark-all-read" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-outline-primary">
+              <i class="fa-solid fa-check-double"></i> Mark All as Read
+            </button>
+          </form>
+        </div>
+
+      <% } else { %>
+        <!-- Empty state when no notifications -->
+        <div class="text-center py-5">
+          <i class="fa-regular fa-bell-slash fa-3x text-muted mb-3"></i>
+          <h4 class="text-muted">No notifications yet</h4>
+          <p class="text-muted">You'll see notifications here when there are updates on your items or claims.</p>
+        </div>
+      <% } %>
+      
+    </div>
+  </div>
+</div>
+
+<style>
+.notification-unread {
+  border-left: 4px solid #007bff;
+  background-color: #f8f9fa;
+}
+
+.notification-read {
+  opacity: 0.7;
+}
+
+.notifications-list .card {
+  transition: all 0.2s ease;
+}
+
+.notifications-list .card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+</style>

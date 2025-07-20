@@ -1,0 +1,19 @@
+<% layout('/layout/boilerplate.ejs') -%>
+<body>
+
+  <div class="Homecontent">
+    <div class="Hometxt"> 
+      <h1>Lost Something On Campus?</h1>
+      <h1>Let's Help You Find It</h1>
+      <h4>Searched every corner of campus? Don’t stress! Post, search, or report lost and found items in minutes. Reconnect with what matters.</h4>
+      <span style="color:#2563EB;">Just one link to everything you lost!</span>
+    </div> 
+    <img src="/images/Chatting (1).gif" alt="illustration" height="500rem" id="homeSVG">
+  </div>
+
+  <script>
+    document.getElementById('filterToggle').addEventListener('click', () => {
+      document.getElementById('filters').classList.toggle('show');
+    });
+  </script>
+</body>

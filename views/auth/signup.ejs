@@ -1,0 +1,36 @@
+<%- layout('/layout/boilerplate.ejs') %>
+
+<body>
+  <div class="auth-content">
+    <div class="auth-txt">
+      <h2>Create an Account</h2>
+
+      <form action="/signup" method="POST" class="auth-form" class="need-validation" novalidate>
+        <input type="text" name="username" placeholder="Full Name" required class="form-control"/>
+        <input type="email" name="email" placeholder="Email" class="form-control" required />
+        <input type="password" name="password" placeholder="Password" class="form-control" required />
+        <input type="tel" name="phone" placeholder="Phone Number" pattern="[0-9]{10}" class="form-control" required />
+
+          <!-- Role dropdown -->
+      <!-- <select name="role" class="form-select" required >
+        <option value="" disabled selected>Select Role</option>
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select> -->
+        <button type="submit">Sign Up</button>
+      </form>
+
+      <div class="or-divider">or</div>
+
+     <!-- Change href to match your route -->
+<a href="/login/federated/google" class="google-btn" style="text-decoration: none;">
+  <i class="fa-brands fa-google"></i>
+  Sign up with Google
+</a>
+
+      <p>Already have an account? <a href="/login">Log in</a></p>
+    </div>
+
+    <img src="/images/users.png" alt="Sign Up Illustration" class="user-img" height="400px">
+  </div>
+</body>

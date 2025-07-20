@@ -1,0 +1,164 @@
+<%- layout('/layout/boilerplate.ejs') %>
+
+<style>
+  body {
+    background-color: #f4f7fc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .admin-container {
+    max-width: 1200px;
+    margin: 4rem auto;
+    background: #fff;
+    padding: 2rem 3rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  }
+
+  .admin-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .admin-header h2 {
+    color: #222;
+    font-size: 2rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+
+  th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #f0f0f0;
+    color: #333;
+    font-weight: 600;
+  }
+
+  tr:hover {
+    background-color: #f9f9f9;
+  }
+
+  .status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+
+  .pending {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+
+  .approved {
+    background-color: #d4edda;
+    color: #155724;
+  }
+
+  .rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+
+  .action-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.3rem;
+    font-weight: bold;
+  }
+
+  .approve-btn {
+    color: #28a745;
+  }
+
+  .reject-btn {
+    color: #dc3545;
+  }
+
+  .action-btn:hover {
+    opacity: 0.9;
+    font-size: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+      display: block;
+    }
+
+    th {
+      display: none;
+    }
+
+    td {
+      position: relative;
+      padding-left: 50%;
+      margin-bottom: 1rem;
+    }
+
+    td::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 1rem;
+      top: 1rem;
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+  }
+</style>
+
+<div class="admin-container">
+  <div class="admin-header">
+    <h2> Admin Panel – Manage Claims</h2>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Claimant Email</th>
+        <th>Item ID</th>
+        <th>Item Type</th>
+        <th>Status</th>
+        <th>Message</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% claims.forEach(claim => { %>
+        <tr>
+          <td data-label="Claimant"><%= claim.claimant?.email || 'Unknown' %></td>
+          <td data-label="Item ID"><%= claim.itemId %></td>
+          <td data-label="Item Type"><%= claim.itemType %></td>
+          <td data-label="Status">
+            <span class="status-badge <%= claim.status %>">
+              <%= claim.status %>
+            </span>
+          </td>
+          <td data-label="Message"><%= claim.message || '—' %></td>
+          <td data-label="Actions">
+            <% if (claim.status === 'pending') { %>
+              <form action="/admin/approve/<%= claim._id %>" method="POST" style="display:inline;">
+                <button class="action-btn approve-btn" type="submit" ><i class="fa-solid fa-circle-check"></i></button>
+              </form>
+              <form action="/admin/reject/<%= claim._id %>" method="POST" style="display:inline;">
+                <button class="action-btn reject-btn" type="submit"><i class="fa-solid fa-circle-xmark"></i></button>
+              </form>
+            <% } else { %>
+              <span class="status-badge <%= claim.status %>"><%= claim.status %></span>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,45 @@
+<%- layout('/layout/boilerplate.ejs') %>
+
+<style>
+  .card {
+  border-radius: 1.5rem;
+}
+
+img.rounded-circle {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+
+</style>
+
+<div class="container mt-5">
+  <div class="card shadow p-4 rounded-4">
+    <div class="row g-4 align-items-center">
+      <div class="col-md-4 text-center">
+        <!-- <img src="https://ui-avatars.com/api/?name=<%= currUser.username %>&background=0D8ABC&color=fff&size=200" class="rounded-circle img-thumbnail shadow-sm" alt="User Avatar"> -->
+         <img src="https://ui-avatars.com/api/?name=<%= currUser.username || currUser.name || 'User' %>&background=0D8ABC&color=fff&size=200" class="rounded-circle img-thumbnail shadow-sm" alt="User Avatar">
+
+      </div>
+      <div class="col-md-8">
+       
+        <h2 class="mb-2"><%= currUser.username || currUser.name || 'User' %></h2>
+        <p class="text-muted mb-1"><i class="fa-solid fa-envelope"></i> <%= currUser.email %></p>
+        <% if (currUser.phone) { %>
+          <p class="text-muted mb-1"><i class="fa-solid fa-mobile-retro"></i> <%= currUser.phone %></p>
+        <% } %>
+        <p class="text-muted "><i class="fa-solid fa-child-dress"></i> Role: <%= currUser.role || 'user' %></p>
+         <!-- <p class="text-muted">📅 Joined on:
+  <%= new Date(currUser.createdAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }) %> -->
+        <a href="/items" class="btn btn-primary mt-3">🔍 View Lost Items</a>
+        <a href="/logout" class="btn btn-outline-danger mt-3 ms-2"> Logout</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+

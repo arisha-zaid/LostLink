@@ -1,0 +1,51 @@
+views/
+│
+├── layout/
+│   └── boilerplate.ejs         # Main layout template with <%- body %>
+│
+├── includes/
+│   ├── navbar.ejs              # Navbar with links and search
+│   └── footer.ejs              # Optional footer
+│
+├── auth/
+│   ├── login.ejs               # Login form for user/admin
+│   └── signin.ejs            # Registration form
+│
+├── items/
+│   ├── list.ejs                # Displays list of found/lost items (with filters)
+│   ├── detail.ejs              # Single item detail view
+│   └── report.ejs              # Form to report a lost/found item
+│
+├── dashboard/
+│   ├── user.ejs                # User dashboard showing their listed items
+│   └── admin.ejs               # Admin panel for item approvals, users
+│
+├── error/
+│   └── 404.ejs                 # Custom 404 page
+│
+├── home.ejs                    # Landing page with intro and call to actions
+└── about.ejs                   # Optional about/mission/contact info
+
+
+| Route              | EJS File              |
+| ------------------ | --------------------- |
+| `/`                | `home.ejs`            |
+| `/login`           | `auth/login.ejs`      |
+| `/register`        | `auth/register.ejs`   |
+| `/items`           | `items/list.ejs`      |
+| `/items/:id`       | `items/detail.ejs`    |
+| `/report`          | `items/report.ejs`    |
+| `/dashboard`       | `dashboard/user.ejs`  |
+| `/admin`           | `dashboard/admin.ejs` |
+| `/about`           | `about.ejs`           |
+| All invalid routes | `error/404.ejs`       |
+
+
+//page for 
+>lists all the items that are lost by users
+>lists all the items that are reported by users
+lists all the items that are found by users
+
+//page for individual item 
+
+//page for error handling

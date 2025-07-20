@@ -1,0 +1,320 @@
+<%- layout('/layout/boilerplate.ejs') %>
+
+<style>
+  /* Responsive Layout Fixes */
+
+.item-detail {
+  padding: 1.2rem;
+  max-width: 900px;
+  margin: auto;
+  position: relative;
+  background: #fff;
+}
+
+/* Back button */
+.back-btn {
+  position: absolute;
+  top: 0.7rem;
+  left: 0.7rem;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.4rem 0.8rem;
+  transition: all 0.2s ease;
+  z-index: 999;
+}
+
+.detail-img {
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 1rem;
+  margin: 0 auto 1.5rem auto;
+  display: block;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.detail-img:hover {
+  transform: scale(1.02);
+}
+
+
+.detail-content {
+   padding: 2.5rem 1rem 1rem 1rem;
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.detail-content h2 {
+  font-size: 1.7rem;
+  color: #2563eb;
+  margin-bottom: 0.7rem;
+}
+
+.time {
+  font-size: 0.85rem;
+  color: #777;
+  margin-bottom: 0.8rem;
+}
+
+.claim-btn:hover {
+  background: #2563eb;
+}
+
+/* Buttons layout */
+  .action-buttons {
+  display: flex;
+  justify-content: flex-end; /* align to right */
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* Unified button style */
+.btn {
+  padding: 0.6rem 1.4rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-family: 'Segoe UI', sans-serif;
+  display: inline-block;
+  text-align: center;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Themed buttons */
+ .edit-btn, .delete-btn{
+   background-color: #fff; /* red-500 */
+  color: black;
+  border: 1px solid black;
+  padding: 0.5rem 1.2rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: background 0.3s ease;
+ }
+.edit-btn:hover {
+   background-color: #eab308; /* yellow-500 */
+}
+
+.delete-btn:hover {
+  background-color: #dc2626;
+  color: #ccc;
+}
+
+.claim-btn {
+  background-color: #2563eb;
+  margin: 1.5rem auto 0;
+  display: block;
+  width: max-content;
+}
+.claim-btn:hover {
+  background-color: #2f36cc;
+}
+
+
+/* Mobile Tweaks */
+@media screen and (max-width: 600px) {
+  .item-detail {
+    padding: 1rem;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .detail-content h2 {
+    font-size: 1.4rem;
+  }
+
+  .claim-btn {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.9rem 1rem;
+  }
+}
+
+.claim-section, .claims-list {
+  max-width: 700px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.claim-section h3,
+.claims-list h3 {
+  color: #2563eb;
+  margin-bottom: 1rem;
+}
+
+.claim-section textarea {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+  resize: vertical;
+}
+
+.claims-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.claims-list li {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  text-align: left;
+}
+
+.claim-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px;
+  transition: transform 0.2s ease;
+}
+
+.action-btn:hover {
+  transform: scale(1.2);
+}
+
+
+</style>
+
+<body>
+
+  <div class="item-detail">
+    <button class="back-btn" onclick="history.back()">←</button>
+     
+     <!-- <img class="detail-img" src="public/images/sample.jpg" alt="not found" /> -->
+     <img class="detail-img" src="<%= listing.image.url %>" alt="<%= listing.title %>">
+    <div class="detail-content" >
+      <% 
+        const now = new Date();
+        const diffMs = now - new Date(listing.createdAt);
+        const minutes = Math.floor(diffMs / 60000);
+        let timeDisplay = '';
+
+        if (minutes < 1) {
+          timeDisplay = 'Just now';
+        } else if (minutes < 60) {
+          timeDisplay = `${minutes} min${minutes === 1 ? '' : 's'} ago`;
+        } else if (minutes < 1440) {
+          const hours = Math.floor(minutes / 60);
+          timeDisplay = `${hours} hour${hours === 1 ? '' : 's'} ago`;
+        } else if (minutes < 43200) {
+          const days = Math.floor(minutes / 1440);
+          timeDisplay = `${days} day${days === 1 ? '' : 's'} ago`;
+        } else {
+          const months = Math.floor(minutes / 43200);
+          timeDisplay = `${months} month${months === 1 ? '' : 's'} ago`;
+        }
+      %>
+
+      <p class="time"><%= timeDisplay %></p>
+       
+      <h2><%= listing.title %></h2>
+
+      <p><strong>Description:</strong><br> 
+        <%= listing.description %>
+      </p>
+
+      <p><strong>📍 Where to find:</strong><br>
+        <%= listing.location %>
+      </p>
+
+      <p><strong>👤 Posted By:</strong><br>
+      <i>
+      <%= listing.owner 
+      ? (listing.owner.username || listing.owner.name || "Unknown") 
+      : "Unknown" %>
+      </i>
+      </p>
+
+      <% if (currUser && listing.owner && currUser._id.toString() === listing.owner._id.toString()) { %>
+   <div class="action-buttons">
+  <a href="/items/<%= listing._id %>/edit" class="btn edit-btn"> Edit</a>
+
+  <form action="/items/<%= listing._id %>?_method=DELETE" method="POST" >
+    <button  class="btn delete-btn"> Delete</button>
+  </form>
+</div>
+       <% } %>
+
+</div>
+
+<hr>
+ <% if(currUser){ %>
+<div class="claim-section">
+  <h3>Think this is your item?</h3>
+  <form action="/items/<%= listing._id %>/claim/" method="POST">
+      <textarea name="message" placeholder="Enter your reason..." required></textarea>
+      <button class="btn claim-btn">Claim Item</button>
+  </form>
+</div>
+<hr>
+<% } %>
+
+<div class="claims-list">
+  <h3>Claims Received:</h3>
+  <% if(claims && claims.length > 0) { %>
+    <ul>
+      <% for(let claim of claims) { %>
+        <li>
+          <strong>Message:</strong> <%= claim.message %><br>
+          <small>Status: <%= claim.status %> | Submitted: <%= claim.createdAt.toLocaleDateString() %></small> <br>
+         
+           <i><i class="fa-solid fa-user-tie"></i> 
+      @<%= claim.claimant && claim.claimant.username 
+     ? claim.claimant.username 
+     : (claim.claimant && claim.claimant.name ? claim.claimant.name : "Unknown User") %><br></i>
+
+        <div class="claim-actions">
+    
+         
+         <% if (currUser && claim.claimant && currUser._id.toString() === claim.claimant._id.toString()) { %>
+
+    <form action="/items/<%= listing._id %>/claim/<%= claim._id %>/?_method=DELETE" method="POST">
+      <button title="Delete" class="action-btn delete-btn"><i class="fa-solid fa-trash"></i></button>
+    </form>
+    <% } %>
+      <% if(currUser && listing.owner && currUser._id.equals(listing.owner._id)){ %>
+    <form action="/items/<%= listing._id %>/claim/<%= claim._id %>/approve" method="POST">
+      <button title="Approve" class="action-btn approve-btn" style="color: green;"><i class="fa-solid fa-circle-check"></i></button>
+    </form>
+    <form action="/items/<%= listing._id %>/claim/<%= claim._id %>/reject" method="POST">
+      <button title="Reject" class="action-btn reject-btn" style="color: red;"><i class="fa-solid fa-circle-xmark"></i></button>
+    </form>
+    <% } %>
+  </div>
+        </li>
+      <% } %>
+    </ul>
+  <% } else { %>
+    <p>No claims received yet.</p>
+  <% } %>
+</div>
+
+
+  </div>
+
+</body>

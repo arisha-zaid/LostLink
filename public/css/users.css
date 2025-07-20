@@ -1,0 +1,138 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.auth-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 2rem;
+  gap: 3rem;
+  min-height: 80vh;
+  flex-wrap: wrap;
+}
+
+.auth-txt {
+  flex: 1;
+  max-width: 420px;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.07);
+  text-align: center;
+}
+
+.auth-txt h2 {
+  color: #2563EB;
+  margin-bottom: 1.5rem;
+  font-size: large;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.auth-form input:focus {
+  outline: none;
+  border-color: #2563EB;
+}
+
+select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+.auth-form button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #2563EB;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.3s;
+}
+
+.auth-form button:hover {
+  background-color: #1e4ec6;
+}
+
+.or-divider {
+  margin: 1rem 0;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 0.6rem;
+  border-radius: 8px;
+  color: #333;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+ 
+}
+
+.google-btn:hover {
+  background-color: #ca2222;
+  color: #ccc;
+ 
+}
+
+.auth-txt p {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.auth-txt a {
+  color: #2563EB;
+  text-decoration: none;
+}
+
+.auth-txt a:hover {
+  text-decoration: underline;
+}
+
+.auth-content img {
+  flex: 1;
+  max-width: 450px;
+  height: auto;
+  border-radius: 12px;
+}
+
+/* Responsive for mobile */
+@media (max-width: 768px) {
+  .auth-content {
+    flex-direction: column-reverse;
+    padding: 1.5rem;
+  }
+
+  .auth-content img {
+    max-width: 280px;
+    height: auto;
+    margin-bottom: 1rem;
+  }
+
+  .auth-txt {
+    width: 100%;
+  }
+}

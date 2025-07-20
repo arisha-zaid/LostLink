@@ -1,0 +1,125 @@
+<%- layout('/layout/boilerplate.ejs') %>
+
+<style>
+  .form-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .form-container h2 {
+    text-align: center;
+    color: #2563eb;
+    margin-bottom: 1rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.2rem;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 0.7rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .form-group input[type="file"] {
+    padding: 0.5rem;
+  }
+
+  .form-btn {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s ease;
+  }
+
+  .form-btn:hover {
+    background-color: #2f36cc;
+  }
+
+  @media (max-width: 480px) {
+    .form-container {
+      margin: 1rem;
+      padding: 1.5rem;
+    }
+  }
+</style>
+
+<body>
+  <div class="form-container">
+    <h2>Edit Lost Item</h2>
+    <form method="POST" action="/items/<%= listing._id %>?_method=PUT"  >
+      
+      <div class="form-group">
+        <label for="title">Item Title</label>
+        <input type="text" value="<%= listing.title %>" id="title" name="title"  />
+      </div>
+
+      <div class="form-group">
+        <label for="description">Item Description</label>
+        <textarea id="description" name="description" ><%= listing.description %></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Last Seen Location</label>
+        <input type="text" id="location" name="location" value="<%= listing.location %>" />
+      </div>
+
+      <div class="form-group">
+        <label for="dateLost">Date Lost</label>
+        <input type="date" id="dateLost" name="dateLost" value="<%= listing.dateLost.toISOString().split('T')[0] %>" />
+      </div>
+
+      <div class="form-group">
+        <label for="category">Item Category</label>
+        <select id="category" name="category">
+  <option value="">Select Category</option>
+  <option value="Electronics" <%= listing.category === 'Electronics' ? 'selected' : '' %>>Electronics</option>
+  <option value="Jewelry" <%= listing.category === 'Jewelry' ? 'selected' : '' %>>Jewelry</option>
+  <option value="Documents" <%= listing.category === 'Documents' ? 'selected' : '' %>>Documents</option>
+  <option value="Cash" <%= listing.category === 'Cash' ? 'selected' : '' %>>Cash</option>
+  <option value="Bottles" <%= listing.category === 'Bottles' ? 'selected' : '' %>>Bottles</option>
+  <option value="Keys" <%= listing.category === 'Keys' ? 'selected' : '' %>>Keys</option>
+  <option value="Bagpack" <%= listing.category === 'Bagpack' ? 'selected' : '' %>>Bagpack</option>
+  <option value="Equipments" <%= listing.category === 'Equipments' ? 'selected' : '' %>>Equipments</option>
+  <option value="Earbuds" <%= listing.category === 'Earbuds' ? 'selected' : '' %>>Earbuds</option>
+</select>
+
+      </div>
+
+      <!-- <div class="form-group">
+        <label for="image">Upload Image</label>
+        <input type="file" id="image" name="image" accept="image/*" />
+      </div> -->
+     
+
+      <button type="submit" class="form-btn">Edit</button>
+    </form>
+  </div>
+</body>

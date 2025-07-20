@@ -1,0 +1,198 @@
+
+<style>
+  .search-btn {
+    background-color: #2563EB;
+    color: white;
+    border-radius: 25px;
+    padding: 0.3rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .search-btn:hover {
+    background-color: #1d4ed8;
+  }
+
+  .search-btn i {
+    font-size: 1rem;
+  }
+
+  .search-inp {
+    border-radius: 25px;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .navbar-nav .nav-link {
+    color: #1f2937;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+  }
+
+  .navbar-nav .nav-link:hover,
+  .navbar-nav .nav-link:focus {
+    color: #2563EB;
+    border-bottom: 2px solid #2563EB;
+    text-decoration: none;
+  }
+
+  .navbar {
+    background-color: #fff !important;
+  }
+
+  .navbar-toggler {
+    border: none;
+    padding: 0.25rem;
+    font-size: 1.2rem;
+    color: #1f2937;
+  }
+
+  .navbar-toggler:focus {
+    box-shadow: none;
+  }
+
+  @media (max-width: 768px) {
+    .navbar-collapse {
+      background-color: #fff;
+      padding: 1rem;
+      border-radius: 0 0 10px 10px;
+    }
+
+    .navbar-nav {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .mobile-search {
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .mobile-search .search-inp {
+      flex: 1;
+      font-size: 0.9rem;
+    }
+
+    .mobile-search .search-btn {
+      white-space: nowrap;
+    }
+
+    .desktop-search {
+      display: none !important;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .mobile-search {
+      display: none !important;
+    }
+
+    .desktop-search {
+      display: flex !important;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+</style>
+
+<body>
+
+<nav class="navbar navbar-expand-md border-bottom sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/"><i class="fa-solid fa-link"></i></a>
+
+    <!-- Right icons always visible -->
+    <div class="d-flex align-items-center order-md-3 gap-2 ms-auto">
+      <!-- Desktop Search -->
+      <form class="d-none d-md-flex desktop-search mobile-search search-form" role="search" action="/items" method="GET">
+        <input class="form-control search-inp" type="search" name="query" placeholder="Search Items" aria-label="Search" value="<%= searchQuery || '' %>">
+        <button class="btn search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </form>
+
+      <!-- Icons -->
+       <% if(!currUser) {%>
+      <a href="/login" class="nav-link p-2"><i class="fa-solid fa-right-to-bracket"></i></a>
+      <a href="/signup" class="nav-link p-2"><i class="fa-solid fa-user-plus"></i></a>
+      <% }else{ %>
+      <!-- Notification Bell -->
+<a href="/notifications" class="nav-link p-2 position-relative">
+  <!-- Bell Icon -->
+  <i class="fa-solid fa-bell"></i>
+
+  <!-- If there are unread notifications, show a red badge -->
+  <% if (typeof unreadNotifications !== 'undefined' && unreadNotifications && unreadNotifications.length > 0) { %>
+    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+          style="font-size: 0.6rem;">
+      <%= unreadNotifications.length %> <!-- Count of unread notifications -->
+    </span>
+  <% } %>
+</a>
+
+      <a href="/logout" class="nav-link p-2"><i class="fa-solid fa-right-from-bracket"></i></a>
+      <% } %>
+      <a href="/profile" class="nav-link p-2"><i class="fa-solid fa-circle-user"></i></a>
+
+      <!-- Small toggle button like icon -->
+      <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+
+    <!-- Collapsible menu (hidden on desktop) -->
+    <div class="collapse navbar-collapse mt-2 mt-md-0" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/items?status=Lost">Lost Items</a>
+        <!-- <a class="nav-link" href="/notifications">Notifications</a> -->
+        <a class="nav-link" href="/help">Help Desk</a>
+
+         <% if (currUser && currUser.role === 'admin') { %>
+      <a class="nav-link text-danger fw-semibold" href="/admin/dashboard">Admin Panel</a>
+      <a class="nav-link text-danger fw-semibold" href="/admin/users">Manage Users</a>
+    <% } %>
+      </div>
+
+      <!-- Mobile search (in dropdown) -->
+      <form class="mobile-search mt-3" role="search" action="/items" method="GET">
+        <input class="form-control search-inp" type="search" name="query" placeholder="Search Items" aria-label="Search" value="<%= searchQuery || '' %>" >
+        <button class="btn search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </form>
+    </div>
+  </div>
+</nav>
+  
+<script>
+  
+  document.addEventListener('DOMContentLoaded', function () {
+    const clearBtn = document.getElementById('clearSearch');
+    const searchInput = document.getElementById('searchInput');
+    const searchForm = document.querySelector('.searchForm');
+
+    if (clearBtn && searchInput && searchForm) {
+    clearBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      // Clear the input
+      searchInput.value = '';
+
+      // Smooth reload of all items using redirection
+      window.location.href = '/items';
+
+      // OR if items are dynamically rendered via JS:
+      // const itemList = document.querySelector('.lost-items-list');
+      // itemList.classList.add('fade-glide');
+      // Fetch and re-render full item list using AJAX (if needed)
+    });
+  }
+    else{
+  console.error('One or more elements not found:', { clearBtn, searchInput, searchForm });
+    }
+  });
+
+</script>
+</body>
+

@@ -1,0 +1,67 @@
+<style>
+
+  .text-teal {
+    color: #0080FF ;
+  }
+
+  .bg-dark {
+    background-color:#0000803e;/* Dark grey */
+  }
+
+  /* Footer Link Hover Effects */
+  .footer-link {
+    color: #ffffffb5;
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.2s ease;
+  }
+
+  .footer-link:hover {
+    color: #FFC107; /* Amber for visibility */
+    text-decoration: underline;
+    transform: translateX(4px); /* subtle slide */
+  }
+</style>
+
+<body>
+    <footer class="bg-dark text-light py-4 mt-5">
+  <div class="container">
+    <div class="row">
+      
+      <div class="col-md-4 mb-3">
+        <h2 class="text-teal">Lost & Found Portal</h2>
+        <p class="small">Helping you find what you've lost on campus — or return what you’ve found.</p>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <h6>Quick Links</h6>
+        <ul class="list-unstyled">
+        <li><a href="/" class="footer-link">Home</a></li>
+        <li><a href="/items" class="footer-link">Browse Items</a></li>
+        <li><a href="/logout" class="footer-link">Log out</a></li>
+        <li><a href="/login" class="footer-link">Login</a></li>
+       </ul>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <h6>Contact Us</h6>
+        <p class="small mb-1">Email: support@lostfound.edu</p>
+        <p class="small">Phone: +91 98765 43210</p>      
+        <h6>Follow Us On</h6>
+       
+      <!-- Social -->
+      <ul class="list-unstyled">
+      <li><a href="#" target="_blank" class="footer-link"><i class="fa-brands fa-facebook"></i> Facebook</a></li>
+      <li><a href="#" target="_blank" class="footer-link"><i class="fa-brands fa-twitter"></i> Twitter</a></li>
+      <li><a href="#" target="_blank" class="footer-link"><i class="fa-brands fa-instagram"></i> Instagram</a></li>
+      </ul>
+        </div>
+
+    </div>
+
+    <div class="text-center mt-3">
+      <small class="text-muted" style="color: rgba(240, 248, 255, 0.726) !important; ">© <%= new Date().getFullYear() %> Lost & Found Portal. All rights reserved.</small>
+    </div>
+  </div>
+</footer>
+
+</body>
