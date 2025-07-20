@@ -130,11 +130,15 @@ if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
 }
 
 //google strategy 
+const callBackURL =
+  process.env.NODE_ENV === 'production'
+    ? process.env.GOOGLE_CALLBACK_URL
+    : 'http://localhost:8080/oauth2/redirect/google';
 // Google Strategy Configuration (Updated for MongoDB)
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-   callbackURL: 'http://localhost:8080/oauth2/redirect/google',
+   callbackURL: callBackURL,
   scope: ['profile', 'email']
 }, async (issuer, profile, done) => {
   try {
